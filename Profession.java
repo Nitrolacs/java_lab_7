@@ -1,10 +1,12 @@
+import org.jetbrains.annotations.NotNull;
+
 import java.util.Objects;
 
 /**
  * Класс содержащий информацию о профессии.
  */
 
-public class Profession {
+public class Profession implements Comparable {
     // Числовые поля
     /**
      * Средний уровень зарплаты.
@@ -188,5 +190,14 @@ public class Profession {
     @Override
     public int hashCode() {
         return Objects.hash(averageSalary, workExperience, name, educationLevel);
+    }
+
+    @Override
+    public int compareTo(@NotNull Object o) {
+        if (o instanceof Profession profession) {
+            int result = getAverageSalary() - profession.getAverageSalary();
+            return Integer.compare(result, 0);
+        }
+        return 0;
     }
 }

@@ -42,7 +42,9 @@ public class Main {
                 ┃ 8. Удаление повторяющихся профессий            ┃
                 ┃ 9. Группировка по уровню образования           ┃
                 ┃ 10. Получение информации о рейтингах профессий ┃
-                ┃ 11. Выход                                      ┃
+                ┃ 11. Сумма всех зарплат                         ┃
+                ┃ 12. Найти самую высокооплачиваемую профессию   ┃
+                ┃ 13. Выход                                      ┃
                 ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛""");
     }
 
@@ -266,7 +268,7 @@ public class Main {
                 int numberParameter = checkInt();
 
                 switch (numberParameter) {
-                    case 1:
+                    case 1 -> {
                         out.print("┃ Введите новое значение: ");
                         String newName = scanner.nextLine();
                         while (newName.isEmpty()) {
@@ -275,23 +277,20 @@ public class Main {
                         }
                         professionsArray.get(indexEdit - 1).setName(newName);
                         printError(3);
-                        break;
-
-                    case 2:
+                    }
+                    case 2 -> {
                         out.print("┃ Введите новое значение: ");
                         int newAverageSalary = checkInt();
                         professionsArray.get(indexEdit - 1).setAverageSalary(newAverageSalary);
                         printError(3);
-                        break;
-
-                    case 3:
+                    }
+                    case 3 -> {
                         out.print("┃ Введите новое значение: ");
                         double newWorkExperience = checkDouble();
                         professionsArray.get(indexEdit - 1).setWorkExperience(newWorkExperience);
                         printError(3);
-                        break;
-
-                    case 4:
+                    }
+                    case 4 -> {
                         out.print("┃ Введите новое значение: ");
                         String newEducationLevel = scanner.nextLine();
                         while (newEducationLevel.isEmpty()) {
@@ -300,10 +299,8 @@ public class Main {
                         }
                         professionsArray.get(indexEdit - 1).setEducationLevel(newEducationLevel);
                         printError(3);
-                        break;
-
-                    default:
-                        printError(4);
+                    }
+                    default -> printError(4);
                 }
             }
         }
@@ -332,30 +329,25 @@ public class Main {
             int numToSort = checkInt();
 
             switch (numToSort) {
-                case 1:
+                case 1 -> {
                     Comparator<Profession> nameComparator = Comparator.comparing(Profession::getName);
                     professionsArray.sort(nameComparator);
-                    break;
-
-                case 2:
+                }
+                case 2 -> {
                     Comparator<Profession> averageSalaryComparator = Comparator.comparing(Profession::getAverageSalary);
                     professionsArray.sort(averageSalaryComparator);
-                    break;
-
-                case 3:
+                }
+                case 3 -> {
                     Comparator<Profession> workExperienceComparator =
                             Comparator.comparing(Profession::getWorkExperience);
                     professionsArray.sort(workExperienceComparator);
-                    break;
-
-                case 4:
+                }
+                case 4 -> {
                     Comparator<Profession> educationLevelComparator =
                             Comparator.comparing(Profession::getEducationLevel);
                     professionsArray.sort(educationLevelComparator);
-                    break;
-
-                default:
-                    printError(4);
+                }
+                default -> printError(4);
             }
 
             out.println("""
@@ -366,7 +358,7 @@ public class Main {
     }
 
     public static void filterByWorkExperience() {
-        out.print("┃ Введите трудовой стаж для пенсии (вещественное число): ");
+        out.print("┃ Введите трудовой стаж для пенсии (найдутся профессии, значение которых больше или равно): ");
         double workExperience = checkDouble();
         Stream<Profession> professions = professionsArray.stream().filter(profession -> profession.getWorkExperience() >= workExperience);
         List<Profession> newProfessionsList = professions.collect(Collectors.toCollection(ArrayList::new));
@@ -401,6 +393,20 @@ public class Main {
         }
     }
 
+    public static void calculateTheSalary() {
+        long start = 0;
+        long result = professionsArray.stream().reduce(start, (value, profession) -> value + profession.getAverageSalary(), Long::sum);
+
+        out.println("┃ Сумма всех зарплат: " + result);
+    }
+
+
+    public static void findHighestSalary() {
+        Optional<Profession> largest = professionsArray.stream().max(Profession::compareTo);
+        largest.ifPresent(profession -> System.out.println("| Самая высокооплачиваемая профессия: " + profession));
+    }
+
+
     /**
      * Основная функция программы, в которой происходит
      * ввод и вывод данных, выполнение алгоритма.
@@ -423,61 +429,27 @@ public class Main {
             userChoice = scanner.nextLine();
 
             switch (userChoice) {
-
-                case "1":
-                    addDefaultProfession();
-                    break;
-
-                case "2":
-                    addCustomProfession();
-                    break;
-
-                case "3":
-                    editProfession();
-                    break;
-
-                case "4":
-                    deleteProfession();
-                    break;
-
-                case "5":
-                    printProfessions(professionsArray);
-                    break;
-
-                case "6":
-                    sortProfessions();
-                    break;
-
+                case "1" -> addDefaultProfession();
+                case "2" -> addCustomProfession();
+                case "3" -> editProfession();
+                case "4" -> deleteProfession();
+                case "5" -> printProfessions(professionsArray);
+                case "6" -> sortProfessions();
+                case "7" -> filterByWorkExperience();
+                case "8" -> deleteDuplicates();
+                case "9" -> groupByEducationLevel();
+                case "10" -> getRatingStatistic();
+                case "11" -> calculateTheSalary();
+                case "12" -> findHighestSalary();
                 // Выход
-                case "7":
-                    filterByWorkExperience();
-                    break;
-
-                case "8":
-                    deleteDuplicates();
-                    break;
-
-                case "9":
-                    groupByEducationLevel();
-                    break;
-
-                case "10":
-                    getRatingStatistic();
-                    break;
-
-                // Выход
-                case "11":
-                    out.println("""
-                            ┏━━━━━━━━━━━━━━━━━━━━━━━━━┓
-                            ┃ Завершение программы... ┃
-                            ┗━━━━━━━━━━━━━━━━━━━━━━━━━┛
-                            """);
-                    break;
-
-                default:
-                    printError(4);
+                case "13" -> out.println("""
+                        ┏━━━━━━━━━━━━━━━━━━━━━━━━━┓
+                        ┃ Завершение программы... ┃
+                        ┗━━━━━━━━━━━━━━━━━━━━━━━━━┛
+                        """);
+                default -> printError(4);
             }
 
-        } while (!userChoice.equals("11"));
+        } while (!userChoice.equals("13"));
     }
 }
