@@ -1,3 +1,5 @@
+import java.util.Objects;
+
 /**
  * Класс содержащий информацию о профессии.
  */
@@ -35,9 +37,10 @@ public class Profession {
 
     /**
      * Конструктор с параметрами.
-     * @param averageSalary Средний уровень зарплаты.
+     *
+     * @param averageSalary  Средний уровень зарплаты.
      * @param workExperience Трудовой стаж для пенсии.
-     * @param name Название профессии.
+     * @param name           Название профессии.
      * @param educationLevel Уровень образования.
      */
     public Profession(int averageSalary, double workExperience,
@@ -52,6 +55,7 @@ public class Profession {
 
     /**
      * Возвращает средний уровень зарплаты.
+     *
      * @return averageSalary Средний уровень зарплаты.
      */
     public int getAverageSalary() {
@@ -60,6 +64,7 @@ public class Profession {
 
     /**
      * Устанавливает средний уровень зарплаты.
+     *
      * @param averageSalary Средний уровень зарплаты.
      */
     public void setAverageSalary(int averageSalary) {
@@ -70,6 +75,7 @@ public class Profession {
 
     /**
      * Возвращает трудовой стаж для пенсии.
+     *
      * @return workExperience Трудовой стаж.
      */
     public double getWorkExperience() {
@@ -78,17 +84,18 @@ public class Profession {
 
     /**
      * Устанавливает трудовой стаж для пенсии.
+     *
      * @param workExperience Трудовой стаж.
      */
     public void setWorkExperience(double workExperience) {
-        if (workExperience > 0)
-        {
+        if (workExperience > 0) {
             this.workExperience = workExperience;
         }
     }
 
     /**
      * Возвращает название профессии.
+     *
      * @return name Название профессии.
      */
     public String getName() {
@@ -97,17 +104,18 @@ public class Profession {
 
     /**
      * Устанавливает название профессии.
+     *
      * @param name Название профессии.
      */
     public void setName(String name) {
-        if (!name.isEmpty())
-        {
+        if (!name.isEmpty()) {
             this.name = name;
         }
     }
 
     /**
      * Возвращает уровень образования.
+     *
      * @return educationLevel Уровень образования.
      */
     public String getEducationLevel() {
@@ -116,36 +124,69 @@ public class Profession {
 
     /**
      * Устанавливает уровень образования.
+     *
      * @param educationLevel Уровень образования.
      */
     public void setEducationLevel(String educationLevel) {
-        if (!educationLevel.isEmpty())
-        {
+        if (!educationLevel.isEmpty()) {
             this.educationLevel = educationLevel;
         }
     }
 
     /**
-     * Возвращает рейтинг профессии.
+     * Возвращает рейтинг профессии (по 5-ой шкале).
+     *
      * @return Рейтинг профессии.
      */
-    public String getRatingInfo()
-    {
+    public int getRatingInfo() {
         int highRate = 70000;
         int mediumRate = 35000;
-        int lowRate = 0;
+        int lowRate = 15000;
+        int zeroRate = 0;
 
         if (this.averageSalary > highRate) {
-            return "Высокий рейтинг профессии";
+            return 5;
+        } else if (this.averageSalary > mediumRate) {
+            return 4;
+        } else if (this.averageSalary > lowRate) {
+            return 3;
+        } else if (this.averageSalary > zeroRate) {
+            return 2;
+        } else if (this.averageSalary == zeroRate) {
+            return 1;
+        } else {
+            return 0;
         }
-        else if (this.averageSalary > mediumRate) {
-            return "Средний рейтинг профессии";
-        }
-        else if (this.averageSalary >= lowRate) {
-            return "Низкий рейтинг профессии";
-        }
-        else {
-            return "Параметр не задан";
-        }
+    }
+
+    /**
+     * Формирует строку с данными о профессии
+     *
+     * @return строковое представление профессии
+     */
+    @Override
+    public String toString() {
+        return "Профессия: { " +
+                "Название профессии: " + name +
+                ", Средний уровень зарплаты: " + averageSalary +
+                ", Трудовой стаж: " + workExperience +
+                ", Уровень образования: " + educationLevel +
+                ", Рейтинг профессии: " + getRatingInfo() + " }";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Profession that = (Profession) o;
+        return averageSalary == that.averageSalary &&
+                Double.compare(that.workExperience, workExperience) == 0 &&
+                Objects.equals(name, that.name) &&
+                Objects.equals(educationLevel, that.educationLevel);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(averageSalary, workExperience, name, educationLevel);
     }
 }

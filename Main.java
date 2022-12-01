@@ -4,76 +4,89 @@
 // Необходимо реализовать класс согласно варианту.
 // Необходимо придумать поля: числовые и текстовые.
 
+import java.io.PrintStream;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Класс используется для работы программы, управления объектами.
  */
 
 public class Main {
+    private static final List<Profession> professionsArray = new ArrayList<>();
+
+    private final static PrintStream out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
+
+    private static final Scanner scanner = new Scanner(System.in);
 
     /**
      * Функция выводит меню программы.
      */
     public static void printMenu() {
 
-        System.out.println("""
-                    ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
-                    ┃            Меню программы             ┃
-                    ┣━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫
-                    ┃ 1. Добавление профессии по умолчанию  ┃
-                    ┃ 2. Добавление профессии с информацией ┃
-                    ┃ 3. Редактирование профессии           ┃
-                    ┃ 4. Удаление профессии                 ┃
-                    ┃ 5. Вывод информации о профессиях      ┃
-                    ┃ 6. Сортировка списка профессий        ┃
-                    ┃ 7. Выход                              ┃
-                    ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛""");
+        out.println("""
+                ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+                ┃                 Меню программы                 ┃
+                ┣━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫
+                ┃ 1. Добавление профессии по умолчанию           ┃
+                ┃ 2. Добавление профессии с информацией          ┃
+                ┃ 3. Редактирование профессии                    ┃
+                ┃ 4. Удаление профессии                          ┃
+                ┃ 5. Вывод информации о профессиях               ┃
+                ┃ 6. Сортировка списка профессий                 ┃
+                ┃ 7. Фильтрация профессий по уровню образования  ┃
+                ┃ 8. Удаление повторяющихся профессий            ┃
+                ┃ 9. Получение информации о рейтингах профессий  ┃
+                ┃ 10. Выход                                      ┃
+                ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛""");
     }
 
     /**
      * Функция выводит меню параметров.
      */
     public static void printMenuEdit() {
-        System.out.println("""
-                    ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
-                    ┃          Параметры профессии          ┃
-                    ┣━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫
-                    ┃ 1. Название профессии                 ┃
-                    ┃ 2. Средний уровень зарплаты           ┃
-                    ┃ 3. Трудовой стаж для пенсии           ┃
-                    ┃ 4. Требуемый уровень образования      ┃
-                    ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛""");
+        out.println("""
+                ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+                ┃          Параметры профессии          ┃
+                ┣━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫
+                ┃ 1. Название профессии                 ┃
+                ┃ 2. Средний уровень зарплаты           ┃
+                ┃ 3. Трудовой стаж для пенсии           ┃
+                ┃ 4. Требуемый уровень образования      ┃
+                ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛""");
     }
 
     /**
      * Функция для вывода предупреждения.
+     *
      * @param choice Выбор сообщения.
      */
     public static void printError(int choice) {
         if (choice == 1) {
-            System.out.println("""
+            out.println("""
                     ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
                     ┃      Профессии ещё не добавлены       ┃
                     ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛""");
         }
 
         if (choice == 2) {
-            System.out.println("""
+            out.println("""
                     ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
                     ┃  Неверный номер профессии.  ┃
                     ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛""");
         }
 
         if (choice == 3) {
-            System.out.println("""
+            out.println("""
                     ┏━━━━━━━━━━━━━━━━━━━━━━━━━━┓
                     ┃  Новое значение задано.  ┃
                     ┗━━━━━━━━━━━━━━━━━━━━━━━━━━┛""");
         }
 
         if (choice == 4) {
-            System.out.println("""
+            out.println("""
                     ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
                     ┃  Такого пункта нет в меню.  ┃
                     ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛""");
@@ -83,6 +96,7 @@ public class Main {
 
     /**
      * Функция для проверки, что ввод - целое число.
+     *
      * @return userInt Целое число.
      */
     public static int checkInt() {
@@ -95,15 +109,14 @@ public class Main {
             try {
                 userInt = Integer.parseInt(userInput);
                 if (userInt <= 0) {
-                    System.out.print("┃ Число должно быть больше нуля. Введите число: ");
+                    out.print("┃ Число должно быть больше нуля. Введите число: ");
                     userInput = scanner.nextLine();
-                }
-                else {
+                } else {
                     correctInput = true;
                 }
 
             } catch (NumberFormatException ex) {
-                System.out.print("┃ Неверный ввод. Введите число: ");
+                out.print("┃ Неверный ввод. Введите число: ");
                 userInput = scanner.nextLine();
             }
         } while (!correctInput);
@@ -112,10 +125,10 @@ public class Main {
 
     /**
      * Функция для проверки, что ввод - вещественное число.
+     *
      * @return userDouble Вещественное число.
      */
     public static double checkDouble() {
-        Scanner scanner = new Scanner(System.in);
         String userInput = scanner.nextLine();
         double userDouble = 0.0;
         boolean correctInput = false;
@@ -124,14 +137,13 @@ public class Main {
             try {
                 userDouble = Double.parseDouble(userInput);
                 if (userDouble <= 0) {
-                    System.out.print("┃ Число должно быть больше нуля. Введите число: ");
+                    out.print("┃ Число должно быть больше нуля. Введите число: ");
                     userInput = scanner.nextLine();
-                }
-                else {
+                } else {
                     correctInput = true;
                 }
             } catch (NumberFormatException ex) {
-                System.out.print("┃ Неверный ввод. Введите число: ");
+                out.print("┃ Неверный ввод. Введите число: ");
                 userInput = scanner.nextLine();
             }
         } while (!correctInput);
@@ -141,151 +153,149 @@ public class Main {
 
     /**
      * Добавление профессии по-умолчанию.
-     * @param professions Список объектов.
      */
-    public static void addDefaultProfession(ArrayList<Profession> professions) {
-        professions.add(new Profession());
-        System.out.println("""
-                    ┏━━━━━━━━━━━━━━━━━━━━━━━━┓
-                    ┃  Профессия добавлена   ┃
-                    ┗━━━━━━━━━━━━━━━━━━━━━━━━┛""");
+    public static void addDefaultProfession() {
+        professionsArray.add(new Profession());
+        out.println("""
+                ┏━━━━━━━━━━━━━━━━━━━━━━━━┓
+                ┃  Профессия добавлена   ┃
+                ┗━━━━━━━━━━━━━━━━━━━━━━━━┛""");
+    }
+
+    public static String getEducationLevel() {
+        String[] array = {
+                "Начальное", "Среднее", "Высшее", "Профессиональное"
+        };
+        ArrayList<String> arrayOfEduLevel = new ArrayList<>(Arrays.asList(array));
+
+        out.print("┃ Доступные для ввода значения: ");
+        out.println(arrayOfEduLevel);
+        String userInput;
+        boolean correctInput = false;
+        out.print("┃ Введите значение: ");
+
+        do {
+            userInput = scanner.nextLine();
+
+            if (arrayOfEduLevel.contains(userInput)) {
+                correctInput = true;
+            }
+
+            else {
+                out.print("┃ Неверный ввод. Введите значение: ");
+            }
+
+        } while (!correctInput);
+
+        return userInput;
     }
 
     /**
      * Добавление профессии с данными, введённые пользователем.
-     * @param professions Список объектов.
      */
-    public static void addCustomProfession(ArrayList<Profession> professions) {
-        Scanner scanner = new Scanner(System.in);
+    public static void addCustomProfession() {
 
-        System.out.println("┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-        System.out.print("┃ Введите название профессии: ");
+        out.println("┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+        out.print("┃ Введите название профессии: ");
         String name = scanner.next();
 
-        System.out.print("┃ Введите средний уровень зарплаты (целое число): ");
+        out.print("┃ Введите средний уровень зарплаты (целое число): ");
         int averageSalary = checkInt();
+        scanner.nextLine();
 
-        System.out.print("┃ Введите трудовой стаж для пенсии (вещественное число): ");
+        out.print("┃ Введите трудовой стаж для пенсии (вещественное число): ");
         double workExperience = checkDouble();
 
-        System.out.print("┃ Введите требуемый уровень образования: ");
-        String educationLevel = scanner.next();
+        out.println("┃ Введите требуемый уровень образования: ");
+        String educationLevel = getEducationLevel();
 
-        System.out.println("┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+        out.println("┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
 
-        professions.add(new Profession(averageSalary, workExperience, name, educationLevel));
+        professionsArray.add(new Profession(averageSalary, workExperience, name, educationLevel));
     }
 
     /**
      * Вывод всех профессий с параметрами.
-     * @param professions Список объектов.
      */
-    public static void printProfessions(ArrayList<Profession> professions) {
-        int count = 1;
-
-        if (professions.isEmpty()) {
-            printError(1);
-        }
-        else {
-            for (Profession p : professions) {
-                System.out.println("┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓");
-                System.out.println("┃                     Профессия "+"№"+count+"                    ┃");
-                System.out.println("┣━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛");
-                System.out.println("┃ Название профессии: " + p.getName());
-                System.out.println("┃ Средний уровень зарплаты: " + p.getAverageSalary());
-                System.out.println("┃ Трудовой стаж необходимый для выхода на пенсию: "
-                + p.getWorkExperience());
-                System.out.println("┃ Требуемый уровень образования: " + p.getEducationLevel());
-                System.out.println("┣━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-                System.out.println("┃ Рейтинг профессии: " + p.getRatingInfo());
-                System.out.println("┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-                count++;
-            }
-        }
+    public static void printProfessions(List<Profession> professions) {
+        Stream<Profession> stream = professions.stream();
+        stream.forEach(out::println);
     }
 
     /**
      * Удаление профессии.
-     * @param professions Список объектов.
      */
-    public static void deleteProfession(ArrayList<Profession> professions) {
-        if (professions.isEmpty()) {
+    public static void deleteProfession() {
+        if (professionsArray.isEmpty()) {
             printError(1);
-        }
-        else {
-            printProfessions(professions);
-            System.out.print("┃ Введите номер профессии для удаления: ");
+        } else {
+            printProfessions(professionsArray);
+            out.print("┃ Введите номер профессии для удаления: ");
             int index = checkInt();
 
-            if (index < 1 || index > professions.size()) {
+            if (index < 1 || index > professionsArray.size()) {
                 printError(2);
-            }
-
-            else {
-                professions.remove(index - 1);
-                System.out.println("┃ Профессия №" + index + " удалена.");
+            } else {
+                professionsArray.remove(index - 1);
+                out.println("┃ Профессия №" + index + " удалена.");
             }
         }
     }
 
     /**
      * Редактирование профессии.
-     * @param professions Список объектов.
      */
-    public static void editProfession(ArrayList<Profession> professions) {
-        Scanner scanner = new Scanner(System.in);
+    public static void editProfession() {
 
-        if (professions.isEmpty()) {
+
+        if (professionsArray.isEmpty()) {
             printError(1);
-        }
-        else {
-            printProfessions(professions);
-            System.out.print("┃ Введите номер профессии, которую хотите изменить: ");
+        } else {
+            printProfessions(professionsArray);
+            out.print("┃ Введите номер профессии, которую хотите изменить: ");
             int indexEdit = checkInt();
 
-            if (indexEdit < 1 || indexEdit > professions.size()) {
+            if (indexEdit < 1 || indexEdit > professionsArray.size()) {
                 printError(2);
-            }
-
-            else {
+            } else {
                 printMenuEdit();
-                System.out.print("┃ Введите номер пункта: ");
+                out.print("┃ Введите номер пункта: ");
                 int numberParameter = checkInt();
 
-                switch(numberParameter) {
+                switch (numberParameter) {
                     case 1:
-                        System.out.print("┃ Введите новое значение: ");
+                        out.print("┃ Введите новое значение: ");
                         String newName = scanner.nextLine();
                         while (newName.isEmpty()) {
-                            System.out.print("┃ Неверный ввод. Введите новое название: ");
+                            out.print("┃ Неверный ввод. Введите новое название: ");
                             newName = scanner.nextLine();
                         }
-                        professions.get(indexEdit - 1).setName(newName);
+                        professionsArray.get(indexEdit - 1).setName(newName);
                         printError(3);
                         break;
 
                     case 2:
-                        System.out.print("┃ Введите новое значение: ");
+                        out.print("┃ Введите новое значение: ");
                         int newAverageSalary = checkInt();
-                        professions.get(indexEdit - 1).setAverageSalary(newAverageSalary);
+                        professionsArray.get(indexEdit - 1).setAverageSalary(newAverageSalary);
                         printError(3);
                         break;
 
                     case 3:
-                        System.out.print("┃ Введите новое значение: ");
+                        out.print("┃ Введите новое значение: ");
                         double newWorkExperience = checkDouble();
-                        professions.get(indexEdit - 1).setWorkExperience(newWorkExperience);
+                        professionsArray.get(indexEdit - 1).setWorkExperience(newWorkExperience);
                         printError(3);
                         break;
 
                     case 4:
-                        System.out.print("┃ Введите новое значение: ");
+                        out.print("┃ Введите новое значение: ");
                         String newEducationLevel = scanner.nextLine();
                         while (newEducationLevel.isEmpty()) {
-                            System.out.print("┃ Неверный ввод. Введите новое название: ");
+                            out.print("┃ Неверный ввод. Введите новое название: ");
                             newEducationLevel = scanner.nextLine();
                         }
-                        professions.get(indexEdit - 1).setEducationLevel(newEducationLevel);
+                        professionsArray.get(indexEdit - 1).setEducationLevel(newEducationLevel);
                         printError(3);
                         break;
 
@@ -296,113 +306,138 @@ public class Main {
         }
     }
 
+    public static void getRatingStatistic() {
+        IntSummaryStatistics ratingStatistic = professionsArray.stream().mapToInt(Profession::getRatingInfo).summaryStatistics();
+        out.println("┃ " + ratingStatistic.getCount() + " профессии/й");
+        out.println("┃ Средний уровень рейтинга профессий: " + ratingStatistic.getAverage());
+        out.println("┃ Максимальный уровень рейтинга профессии: " + ratingStatistic.getMax());
+        out.println("┃ Минимальный уровень рейтинга профессии: " + ratingStatistic.getMin());
+    }
+
+
     /**
      * Сортировка профессий по их полям.
-     * @param professions Список объектов.
      */
-    public static void sortProfessions(ArrayList<Profession> professions) {
+    public static void sortProfessions() {
 
-        if (professions.isEmpty()) {
+        if (professionsArray.isEmpty()) {
             printError(1);
-        }
-        else {
+        } else {
             printMenuEdit();
 
-            System.out.print("┃ Введите номер пункта, по которому нужно отсортировать: ");
+            out.print("┃ Введите номер пункта, по которому нужно отсортировать: ");
             int numToSort = checkInt();
 
             switch (numToSort) {
                 case 1:
                     Comparator<Profession> nameComparator = Comparator.comparing(Profession::getName);
-                    professions.sort(nameComparator);
+                    professionsArray.sort(nameComparator);
                     break;
 
                 case 2:
                     Comparator<Profession> averageSalaryComparator = Comparator.comparing(Profession::getAverageSalary);
-                    professions.sort(averageSalaryComparator);
+                    professionsArray.sort(averageSalaryComparator);
                     break;
 
                 case 3:
                     Comparator<Profession> workExperienceComparator =
                             Comparator.comparing(Profession::getWorkExperience);
-                    professions.sort(workExperienceComparator);
+                    professionsArray.sort(workExperienceComparator);
                     break;
 
                 case 4:
                     Comparator<Profession> educationLevelComparator =
                             Comparator.comparing(Profession::getEducationLevel);
-                    professions.sort(educationLevelComparator);
+                    professionsArray.sort(educationLevelComparator);
                     break;
 
                 default:
                     printError(4);
             }
 
-            System.out.println("""
-                            ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
-                            ┃  Профессии отсортированы  ┃
-                            ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━┛""");
+            out.println("""
+                    ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+                    ┃  Профессии отсортированы  ┃
+                    ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━┛""");
         }
+    }
 
-
+    public static void filterByWorkExperience() {
+        out.print("┃ Введите трудовой стаж для пенсии (вещественное число): ");
+        double workExperience = checkDouble();
+        Stream<Profession> professions = professionsArray.stream().filter(profession -> profession.getWorkExperience() >= workExperience);
+        List<Profession> newProfessionsList = professions.collect(Collectors.toCollection(ArrayList::new));
+        printProfessions(newProfessionsList);
     }
 
     /**
      * Основная функция программы, в которой происходит
      * ввод и вывод данных, выполнение алгоритма.
+     *
      * @param args массив переменных, введённых при запуске
      *             основной функции.
      */
     public static void main(String[] args) {
 
-        Scanner scanner = new Scanner(System.in);
+        professionsArray.add(new Profession(30000, 5.5, "Слесарь", "Среднее"));
+        professionsArray.add(new Profession(45000, 10.2, "Учитель", "Высшее"));
+        professionsArray.add(new Profession(70000, 7, "Программист", "Бакалавриат"));
+
         String userChoice;
-        ArrayList<Profession> professions = new ArrayList<>();
 
         do {
             printMenu();
-            System.out.print("┃ Введите номер пункта: ");
+            out.print("┃ Введите номер пункта: ");
             userChoice = scanner.nextLine();
 
             switch (userChoice) {
 
                 case "1":
-                    addDefaultProfession(professions);
+                    addDefaultProfession();
                     break;
 
                 case "2":
-                    addCustomProfession(professions);
+                    addCustomProfession();
                     break;
 
                 case "3":
-                    editProfession(professions);
+                    editProfession();
                     break;
 
                 case "4":
-                    deleteProfession(professions);
+                    deleteProfession();
                     break;
 
                 case "5":
-                    printProfessions(professions);
+                    printProfessions(professionsArray);
                     break;
 
                 case "6":
-                    sortProfessions(professions);
+                    sortProfessions();
                     break;
 
                 // Выход
                 case "7":
-                    System.out.println("""
-                    ┏━━━━━━━━━━━━━━━━━━━━━━━━━┓
-                    ┃ Завершение программы... ┃
-                    ┗━━━━━━━━━━━━━━━━━━━━━━━━━┛
-                    """);
+                    filterByWorkExperience();
+                    break;
+
+                case "9":
+                    getRatingStatistic();
+                    break;
+
+                // Выход
+                case "10":
+                    out.println("""
+                            ┏━━━━━━━━━━━━━━━━━━━━━━━━━┓
+                            ┃ Завершение программы... ┃
+                            ┗━━━━━━━━━━━━━━━━━━━━━━━━━┛
+                            """);
                     break;
 
                 default:
                     printError(4);
             }
 
-        } while (!userChoice.equals("7"));
+        } while (!userChoice.equals("10"));
     }
 }
