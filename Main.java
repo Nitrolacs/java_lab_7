@@ -10,12 +10,14 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static java.util.stream.Collectors.counting;
+
 /**
  * Класс используется для работы программы, управления объектами.
  */
 
 public class Main {
-    private static final List<Profession> professionsArray = new ArrayList<>();
+    private static List<Profession> professionsArray = new ArrayList<>();
 
     private final static PrintStream out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
 
@@ -36,10 +38,11 @@ public class Main {
                 ┃ 4. Удаление профессии                          ┃
                 ┃ 5. Вывод информации о профессиях               ┃
                 ┃ 6. Сортировка списка профессий                 ┃
-                ┃ 7. Фильтрация профессий по уровню образования  ┃
+                ┃ 7. Фильтрация профессий по трудовому стажу     ┃
                 ┃ 8. Удаление повторяющихся профессий            ┃
-                ┃ 9. Получение информации о рейтингах профессий  ┃
-                ┃ 10. Выход                                      ┃
+                ┃ 9. Группировка по уровню образования           ┃
+                ┃ 10. Получение информации о рейтингах профессий ┃
+                ┃ 11. Выход                                      ┃
                 ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛""");
     }
 
@@ -370,6 +373,34 @@ public class Main {
         printProfessions(newProfessionsList);
     }
 
+    public static void deleteDuplicates() {
+        Stream<Profession> stream = professionsArray.stream().distinct();
+        int oldLength = professionsArray.size();
+        professionsArray = stream.collect(Collectors.toCollection(ArrayList::new));
+        long deletedLength = oldLength - professionsArray.size();
+        if (deletedLength > 0){
+            out.printf("┃ %d повторяющаяся/ихся профессия/ий была/о удалена/о.\n", deletedLength);
+        }
+        else{
+            out.println("┃ Повторяющиеся профессии не были найдены.");
+        }
+    }
+
+    public static void groupByEducationLevel() {
+        Map<String, List<Profession>> professionByLevOfEdu = professionsArray.stream().collect(Collectors.groupingBy(Profession::getEducationLevel));
+        Map<String, Long> professionByLevOfEduCounts = professionsArray.stream().collect(
+                Collectors.groupingBy(Profession::getEducationLevel, counting()));
+
+        for(String key : professionByLevOfEdu.keySet()){
+            out.println("┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+            out.println("┃ Уровень профессии: " + key + ", количество: " + professionByLevOfEduCounts.get(key));
+            out.println("┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+            for (Profession profession : professionByLevOfEdu.get(key)){
+                out.println(profession);
+            }
+        }
+    }
+
     /**
      * Основная функция программы, в которой происходит
      * ввод и вывод данных, выполнение алгоритма.
@@ -382,6 +413,7 @@ public class Main {
         professionsArray.add(new Profession(30000, 5.5, "Слесарь", "Среднее"));
         professionsArray.add(new Profession(45000, 10.2, "Учитель", "Высшее"));
         professionsArray.add(new Profession(70000, 7, "Программист", "Бакалавриат"));
+        professionsArray.add(new Profession(45000, 10.2, "Учитель", "Высшее"));
 
         String userChoice;
 
@@ -421,12 +453,20 @@ public class Main {
                     filterByWorkExperience();
                     break;
 
+                case "8":
+                    deleteDuplicates();
+                    break;
+
                 case "9":
+                    groupByEducationLevel();
+                    break;
+
+                case "10":
                     getRatingStatistic();
                     break;
 
                 // Выход
-                case "10":
+                case "11":
                     out.println("""
                             ┏━━━━━━━━━━━━━━━━━━━━━━━━━┓
                             ┃ Завершение программы... ┃
@@ -438,6 +478,6 @@ public class Main {
                     printError(4);
             }
 
-        } while (!userChoice.equals("10"));
+        } while (!userChoice.equals("11"));
     }
 }
