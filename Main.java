@@ -9,7 +9,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
 import static java.util.stream.Collectors.counting;
 
 /**
@@ -17,6 +16,10 @@ import static java.util.stream.Collectors.counting;
  */
 
 public class Main {
+
+    /**
+     * Список профессий
+     */
     private static List<Profession> professionsArray = new ArrayList<>();
 
     private final static PrintStream out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
@@ -167,6 +170,10 @@ public class Main {
                 ┗━━━━━━━━━━━━━━━━━━━━━━━━┛""");
     }
 
+    /**
+     * Получение уровня образования
+     * @return уровень образования
+     */
     public static String getEducationLevel() {
         String[] array = {
                 "Начальное", "Среднее", "Высшее", "Профессиональное"
@@ -306,6 +313,10 @@ public class Main {
         }
     }
 
+    /**
+     * Получение различных параметров о рейтинге профессии.
+     * (Демонстрация умения работать с SummaryStatistics)
+     */
     public static void getRatingStatistic() {
         IntSummaryStatistics ratingStatistic = professionsArray.stream().mapToInt(Profession::getRatingInfo).summaryStatistics();
         out.println("┃ " + ratingStatistic.getCount() + " профессии/й");
@@ -357,6 +368,9 @@ public class Main {
         }
     }
 
+    /**
+     * Фильтрация профессий по трудовому стажу
+     */
     public static void filterByWorkExperience() {
         out.print("┃ Введите трудовой стаж для пенсии (найдутся профессии, значение которых больше или равно): ");
         double workExperience = checkDouble();
@@ -365,6 +379,9 @@ public class Main {
         printProfessions(newProfessionsList);
     }
 
+    /**
+     * Изъятие из массива/списка дубликатов.
+     */
     public static void deleteDuplicates() {
         Stream<Profession> stream = professionsArray.stream().distinct();
         int oldLength = professionsArray.size();
@@ -378,21 +395,28 @@ public class Main {
         }
     }
 
+    /**
+     * Группировка профессий по уровню образования
+     */
     public static void groupByEducationLevel() {
         Map<String, List<Profession>> professionByLevOfEdu = professionsArray.stream().collect(Collectors.groupingBy(Profession::getEducationLevel));
         Map<String, Long> professionByLevOfEduCounts = professionsArray.stream().collect(
                 Collectors.groupingBy(Profession::getEducationLevel, counting()));
 
         for(String key : professionByLevOfEdu.keySet()){
-            out.println("┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-            out.println("┃ Уровень профессии: " + key + ", количество: " + professionByLevOfEduCounts.get(key));
-            out.println("┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+            out.println("┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+            out.println("┃ Уровень образования: " + key + ", количество: " + professionByLevOfEduCounts.get(key));
+            out.println("┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
             for (Profession profession : professionByLevOfEdu.get(key)){
                 out.println(profession);
             }
         }
     }
 
+    /**
+     * Вычисление суммы всех зарплат.
+     * (Демонстрация умения работать с операциями сведения с накоплением).
+     */
     public static void calculateTheSalary() {
         long start = 0;
         long result = professionsArray.stream().reduce(start, (value, profession) -> value + profession.getAverageSalary(), Long::sum);
@@ -401,6 +425,10 @@ public class Main {
     }
 
 
+    /**
+     * Нахождение самой высокооплачиваемой профессии.
+     * (Демонстрация умения работать с типом Optional)
+     */
     public static void findHighestSalary() {
         Optional<Profession> largest = professionsArray.stream().max(Profession::compareTo);
         largest.ifPresent(profession -> System.out.println("| Самая высокооплачиваемая профессия: " + profession));
