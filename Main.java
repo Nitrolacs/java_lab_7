@@ -9,6 +9,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
 import static java.util.stream.Collectors.counting;
 
 /**
@@ -18,12 +19,18 @@ import static java.util.stream.Collectors.counting;
 public class Main {
 
     /**
-     * Список профессий
+     * Список всех профессий
      */
     private static List<Profession> professionsArray = new ArrayList<>();
 
+    /**
+     * Поток вывода данных (поддерживает русский язык)
+     */
     private final static PrintStream out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
 
+    /**
+     * Считывание данных из консоли
+     */
     private static final Scanner scanner = new Scanner(System.in);
 
     /**
@@ -172,6 +179,7 @@ public class Main {
 
     /**
      * Получение уровня образования
+     *
      * @return уровень образования
      */
     public static String getEducationLevel() {
@@ -191,9 +199,7 @@ public class Main {
 
             if (arrayOfEduLevel.contains(userInput)) {
                 correctInput = true;
-            }
-
-            else {
+            } else {
                 out.print("┃ Неверный ввод. Введите значение: ");
             }
 
@@ -336,29 +342,22 @@ public class Main {
         } else {
             printMenuEdit();
 
+            Comparator<Profession> newComporator = null;
+
             out.print("┃ Введите номер пункта, по которому нужно отсортировать: ");
             int numToSort = checkInt();
 
             switch (numToSort) {
-                case 1 -> {
-                    Comparator<Profession> nameComparator = Comparator.comparing(Profession::getName);
-                    professionsArray.sort(nameComparator);
-                }
-                case 2 -> {
-                    Comparator<Profession> averageSalaryComparator = Comparator.comparing(Profession::getAverageSalary);
-                    professionsArray.sort(averageSalaryComparator);
-                }
-                case 3 -> {
-                    Comparator<Profession> workExperienceComparator =
-                            Comparator.comparing(Profession::getWorkExperience);
-                    professionsArray.sort(workExperienceComparator);
-                }
-                case 4 -> {
-                    Comparator<Profession> educationLevelComparator =
-                            Comparator.comparing(Profession::getEducationLevel);
-                    professionsArray.sort(educationLevelComparator);
-                }
+                case 1 -> newComporator = Comparator.comparing(Profession::getName);
+                case 2 -> newComporator = Comparator.comparing(Profession::getAverageSalary);
+                case 3 -> newComporator = Comparator.comparing(Profession::getWorkExperience);
+                case 4 -> newComporator = Comparator.comparing(Profession::getEducationLevel);
                 default -> printError(4);
+            }
+
+            if (newComporator != null) {
+                Stream<Profession> sorted = professionsArray.stream().sorted(newComporator);
+                professionsArray = sorted.collect(Collectors.toCollection(ArrayList::new));
             }
 
             out.println("""
@@ -387,10 +386,9 @@ public class Main {
         int oldLength = professionsArray.size();
         professionsArray = stream.collect(Collectors.toCollection(ArrayList::new));
         long deletedLength = oldLength - professionsArray.size();
-        if (deletedLength > 0){
+        if (deletedLength > 0) {
             out.printf("┃ %d повторяющаяся/ихся профессия/ий была/о удалена/о.\n", deletedLength);
-        }
-        else{
+        } else {
             out.println("┃ Повторяющиеся профессии не были найдены.");
         }
     }
@@ -403,11 +401,11 @@ public class Main {
         Map<String, Long> professionByLevOfEduCounts = professionsArray.stream().collect(
                 Collectors.groupingBy(Profession::getEducationLevel, counting()));
 
-        for(String key : professionByLevOfEdu.keySet()){
+        for (String key : professionByLevOfEdu.keySet()) {
             out.println("┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
             out.println("┃ Уровень образования: " + key + ", количество: " + professionByLevOfEduCounts.get(key));
             out.println("┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-            for (Profession profession : professionByLevOfEdu.get(key)){
+            for (Profession profession : professionByLevOfEdu.get(key)) {
                 out.println(profession);
             }
         }

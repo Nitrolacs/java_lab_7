@@ -176,6 +176,11 @@ public class Profession implements Comparable {
                 ", Рейтинг профессии: " + getRatingInfo() + " }";
     }
 
+    /**
+     * Метод сравнения
+     * @param o объект
+     * @return
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -187,11 +192,20 @@ public class Profession implements Comparable {
                 Objects.equals(educationLevel, that.educationLevel);
     }
 
+    /**
+     * Вычисляет хэшкод
+     * @return хэшкод
+     */
     @Override
     public int hashCode() {
         return Objects.hash(averageSalary, workExperience, name, educationLevel);
     }
 
+    /**
+     * Сравнивает больше, или меньше.
+     * @param o the object to be compared.
+     * @return
+     */
     @Override
     public int compareTo(@NotNull Object o) {
         if (o instanceof Profession profession) {
